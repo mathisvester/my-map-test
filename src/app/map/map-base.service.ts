@@ -1,10 +1,10 @@
-import { Injectable, Signal, signal } from '@angular/core';
+import { Injectable, OnDestroy, Signal, signal } from '@angular/core';
 import ArcGISMap from '@arcgis/core/Map.js';
 import MapView from '@arcgis/core/views/MapView.js';
 import { MapBase } from './map-base';
 
 @Injectable()
-export class MapBaseService implements MapBase {
+export class MapBaseService implements MapBase, OnDestroy {
   private _map: ArcGISMap | undefined;
   private _view: MapView | undefined;
   private _mapLoaded = signal(false);
@@ -38,7 +38,7 @@ export class MapBaseService implements MapBase {
     });
   }
 
-  destroy(): void {
+  ngOnDestroy(): void {
     this._map?.destroy();
   }
 }

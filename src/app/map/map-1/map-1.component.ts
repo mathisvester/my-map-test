@@ -3,6 +3,7 @@ import {
   Component,
   effect,
   ElementRef,
+  OnDestroy,
   ViewChild,
 } from '@angular/core';
 import { Map1Service } from './map-1.service';
