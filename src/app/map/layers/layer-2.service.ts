@@ -7,10 +7,7 @@ import { Map1Service } from '../map-1/map-1.service';
 
 @Injectable()
 export class Layer2Service implements BaseLayer {
-  view: MapView | undefined;
-  mapLoaded: boolean | undefined;
-
-  pointGraphic = new Graphic({
+  private pointGraphic = new Graphic({
     attributes: {
       name: 'Gloria Molina Grand Park Playground',
       address: '227 N Spring St, Los Angeles, CA 90012',
@@ -50,9 +47,13 @@ export class Layer2Service implements BaseLayer {
     },
   });
 
-  graphicsLayer = new GraphicsLayer({
+  private _graphicsLayer = new GraphicsLayer({
     graphics: [this.pointGraphic],
   });
+
+  get graphicsLayer() {
+    return this._graphicsLayer;
+  }
 
   constructor(private map1Service: Map1Service) {
     effect(() => {
@@ -63,9 +64,5 @@ export class Layer2Service implements BaseLayer {
         this.map1Service.view.ui.components = ['attribution'];
       }
     });
-
-    if (this.mapLoaded && this.view instanceof MapView) {
-      this.view.ui.components = ['attribution'];
-    }
   }
 }

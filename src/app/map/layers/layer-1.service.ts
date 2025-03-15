@@ -5,7 +5,7 @@ import { BaseLayer } from '../layer-base';
 
 @Injectable()
 export class Layer1Service implements BaseLayer {
-  pointGraphic = new Graphic({
+  private pointGraphic = new Graphic({
     attributes: {
       name: 'LA City Hall',
       address: '200 N Spring St, Los Angeles, CA 90012',
@@ -45,7 +45,11 @@ export class Layer1Service implements BaseLayer {
     },
   });
 
-  graphicsLayer = new GraphicsLayer({
+  private _graphicsLayer = new GraphicsLayer({
     graphics: [this.pointGraphic],
   });
+
+  get graphicsLayer() {
+    return this._graphicsLayer;
+  }
 }
