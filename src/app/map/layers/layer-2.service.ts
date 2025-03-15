@@ -1,10 +1,15 @@
-import { Injectable } from '@angular/core';
+import { effect, Injectable } from '@angular/core';
 import Graphic from '@arcgis/core/Graphic.js';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer.js';
 import { BaseLayer } from '../layer-base';
+import MapView from '@arcgis/core/views/MapView.js';
+import { Map1Service } from '../map-1/map-1.service';
 
 @Injectable()
 export class Layer2Service implements BaseLayer {
+  view: MapView | undefined;
+  mapLoaded: boolean | undefined;
+
   pointGraphic = new Graphic({
     attributes: {
       name: 'Gloria Molina Grand Park Playground',
@@ -48,4 +53,19 @@ export class Layer2Service implements BaseLayer {
   graphicsLayer = new GraphicsLayer({
     graphics: [this.pointGraphic],
   });
+
+  constructor(private map1Service: Map1Service) {
+    effect(() => {
+      if (
+        this.map1Service.mapLoaded() &&
+        this.map1Service.view instanceof MapView
+      ) {
+        this.map1Service.view.ui.components = ['attribution'];
+      }
+    });
+
+    if (this.mapLoaded && this.view instanceof MapView) {
+      this.view.ui.components = ['attribution'];
+    }
+  }
 }
