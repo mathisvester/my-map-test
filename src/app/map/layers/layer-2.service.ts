@@ -1,4 +1,4 @@
-import { effect, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import Graphic from '@arcgis/core/Graphic.js';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer.js';
 import { BaseLayer } from '../layer-base';
@@ -56,11 +56,8 @@ export class Layer2Service implements BaseLayer {
   }
 
   constructor(private map1Service: Map1Service) {
-    effect(() => {
-      if (
-        this.map1Service.mapLoaded() &&
-        this.map1Service.view instanceof MapView
-      ) {
+    this.map1Service.mapLoaded.then(() => {
+      if (this.map1Service.view instanceof MapView) {
         this.map1Service.view.ui.components = ['attribution'];
       }
     });

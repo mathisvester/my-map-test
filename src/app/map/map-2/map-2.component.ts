@@ -1,4 +1,4 @@
-import { Component, effect, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Map2Service } from './map-2.service';
 import { Layer1Service } from '../layers/layer-1.service';
 
@@ -16,10 +16,8 @@ export class Map2Component {
     private map2Service: Map2Service,
     private layer1Service: Layer1Service,
   ) {
-    effect(() => {
-      if (this.map2Service.mapLoaded()) {
-        this.map2Service.map?.add(this.layer1Service.graphicsLayer);
-      }
+    this.map2Service.mapLoaded.then(() => {
+      this.map2Service.map?.add(this.layer1Service.graphicsLayer);
     });
   }
 

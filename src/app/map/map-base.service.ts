@@ -2,16 +2,15 @@ import { Injectable, OnDestroy, Signal, signal } from '@angular/core';
 import ArcGISMap from '@arcgis/core/Map.js';
 import MapView from '@arcgis/core/views/MapView.js';
 import { MapBase } from './map-base';
+import { firstValueFrom, Subject, take } from 'rxjs';
 
 @Injectable()
 export class MapBaseService implements MapBase, OnDestroy {
   private _map: ArcGISMap | undefined;
   private _view: MapView | undefined;
-  private _mapLoaded = signal(false);
+  private _mapLoaded = new Subject<boolean>();
 
-  get mapLoaded() {
-    return this._mapLoaded.asReadonly();
-  }
+  mapLoaded: Promise<boolean> = firstValueFrom(this._mapLoaded.pipe(take(1)));
 
   get map() {
     return this._map;
@@ -34,7 +33,7 @@ export class MapBaseService implements MapBase, OnDestroy {
     });
 
     this._view.when(() => {
-      this._mapLoaded.set(true);
+      this._mapLoaded.next(true);
     });
   }
 

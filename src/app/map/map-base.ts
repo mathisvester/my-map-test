@@ -6,5 +6,5 @@ export interface MapBase {
   map: ArcGISMap | undefined;
   view: MapView | undefined;
   initalizeMap: (params: Pick<MapView, 'container'>) => void;
-  mapLoaded: Signal<boolean>;
+  mapLoaded: Promise<boolean>;
 }
