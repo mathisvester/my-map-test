@@ -2,7 +2,8 @@ import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { Map1Service } from './map-1.service';
 import { Layer1Service } from '../layers/layer-1.service';
 import { Layer2Service } from '../layers/layer-2.service';
-import { HightlightService } from './highlight-service';
+import { HightlightService } from '../features/highlight-service';
+import { hightlightServiceProvider } from '../features/highlight-service.provider';
 
 @Component({
   selector: 'app-map-1',
@@ -11,7 +12,16 @@ import { HightlightService } from './highlight-service';
     ><button (click)="deselect()">Deselect</button>
     <div #viewDiv id="viewDiv"></div>`,
   styleUrl: './map-1.component.css',
-  providers: [Map1Service, Layer1Service, Layer2Service, HightlightService],
+  providers: [
+    Map1Service,
+    Layer1Service,
+    Layer2Service,
+    {
+      provide: HightlightService,
+      useFactory: hightlightServiceProvider,
+      deps: [Map1Service, Layer1Service],
+    },
+  ],
 })
 export class Map1Component implements AfterViewInit {
   @ViewChild('viewDiv') map: ElementRef<HTMLDivElement> | undefined;

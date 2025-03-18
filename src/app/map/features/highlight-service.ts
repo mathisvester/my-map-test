@@ -1,5 +1,6 @@
 import {
   effect,
+  inject,
   Injectable,
   Injector,
   OnDestroy,
@@ -9,8 +10,8 @@ import {
 import Graphic from '@arcgis/core/Graphic';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import Handle from '@arcgis/core/core/Handles';
-import { Map1Service } from './map-1.service';
-import { Layer1Service } from '../layers/layer-1.service';
+import MapView from '@arcgis/core/views/MapView';
+import { MapProps } from '../map-base';
 
 interface Place {
   name: string;
@@ -41,27 +42,23 @@ export class HightlightService implements OnDestroy {
   selectedGraphics: WritableSignal<Graphic[]> = signal([]);
   highlights = new Handle();
 
-  constructor(
-    map1Service: Map1Service,
-    layer1Service: Layer1Service,
-    injector: Injector,
-  ) {
-    map1Service.mapLoaded.then(() => {
+  private injector = inject(Injector);
+
+  constructor(mapLoaded: Promise<MapProps>, layer: GraphicsLayer) {
+    mapLoaded.then(({ view }) => {
       effect(
         () => {
           const selectedGraphics = this.selectedGraphics();
 
-          map1Service.view
-            ?.whenLayerView(layer1Service.graphicsLayer)
-            .then((layerView) => {
-              this.highlights.removeAll();
+          view.whenLayerView(layer).then((layerView) => {
+            this.highlights.removeAll();
 
-              if (selectedGraphics.length >= 1) {
-                this.highlights.add(layerView.highlight(selectedGraphics));
-              }
-            });
+            if (selectedGraphics.length >= 1) {
+              this.highlights.add(layerView.highlight(selectedGraphics));
+            }
+          });
         },
-        { injector },
+        { injector: this.injector },
       );
     });
   }
